@@ -363,6 +363,7 @@ J⁺ = Jᵀ (J Jᵀ + λI)⁻¹
 <nav class="nav" aria-label="Diapositivas">
   <button type="button" id="ant" aria-label="Diapositiva anterior"><span class="ms" aria-hidden="true">arrow_upward</span></button>
   <button type="button" id="sig" aria-label="Diapositiva siguiente"><span class="ms" aria-hidden="true">arrow_downward</span></button>
+  <button type="button" id="full" aria-label="Pantalla completa (F)" title="Pantalla completa (F)"><span class="ms" aria-hidden="true">fullscreen</span></button>
 </nav>
 
 <script>
@@ -372,7 +373,18 @@ J⁺ = Jᵀ (J Jᵀ + λI)⁻¹
   const ir = d => slides[Math.max(0, Math.min(slides.length - 1, actual() + d))].scrollIntoView();
   document.getElementById('ant').onclick = () => ir(-1);
   document.getElementById('sig').onclick = () => ir(1);
+  const full = document.getElementById('full');
+  const pantalla = () => {
+    const i = actual();
+    const p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    p.then(() => slides[i].scrollIntoView({ behavior: 'instant' })).catch(() => {});
+  };
+  full.onclick = pantalla;
+  document.addEventListener('fullscreenchange', () => {
+    full.querySelector('.ms').textContent = document.fullscreenElement ? 'fullscreen_exit' : 'fullscreen';
+  });
   addEventListener('keydown', e => {
+    if (e.key === 'f' || e.key === 'F') pantalla();
     if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); ir(1); }
     if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); ir(-1); }
   });
