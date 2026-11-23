@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROBOT-REC</title>
+<meta name="description" content="Presentación del ROBOT-REC: robot recolector de basura para oficinas simulado en MuJoCo / Genesis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block">
+<style>
+  :root {
+    --navy: #14202E;
+    --navy-2: #1C2B3D;
+    --navy-line: #2C3B4E;
+    --crema: #F3F1EC;
+    --crema-2: #E4E0D6;
+    --crema-line: #C2C0BC;
+    --ambar: #F2A93B;
+    --ambar-osc: #9A5A00;
+    --tinta: #14202E;
+    --texto: #434C59;
+    --suave: #6B7380;
+    --claro: #EDEFF3;
+    --claro-suave: #B4B2AF;
+    --apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--navy); color: var(--texto); font-family: var(--apple); -webkit-font-smoothing: antialiased; }
+
+  .ms { font-family: "Material Symbols Rounded"; font-weight: 400; font-style: normal; line-height: 1;
+        font-size: 1.5em; display: inline-block; vertical-align: middle; font-variation-settings: "FILL" 0, "opsz" 24;
+        -webkit-font-feature-settings: "liga"; font-feature-settings: "liga"; user-select: none; }
+
+  /* ---- diapositivas: claras (crema), oscuras (navy) y de énfasis (ámbar), como en el pptx ---- */
+  .slide { min-height: 100svh; scroll-snap-align: start; position: relative; display: flex; flex-direction: column;
+           justify-content: center; padding: clamp(32px, 6vw, 88px) clamp(16px, 6.5vw, 96px); }
+  .clara { background: var(--crema); color: var(--texto); }
+  .oscura { background: var(--navy); color: var(--claro-suave); }
+  .ambar { background: var(--ambar); color: var(--tinta); }
+  .num { position: absolute; right: clamp(16px, 3vw, 40px); bottom: clamp(12px, 2.5vw, 28px); font-size: 13px; opacity: .55; }
+
+  h1, h2 { font-weight: 700; letter-spacing: -0.02em; color: var(--tinta); line-height: 1.1; }
+  .oscura h1, .oscura h2 { color: #fff; }
+  h1 { font-size: clamp(32px, 5vw, 64px); }
+  h2 { font-size: clamp(26px, 3.2vw, 42px); margin-bottom: clamp(20px, 2.5vw, 36px); }
+  h3 { font-size: clamp(16px, 1.4vw, 20px); font-weight: 600; color: var(--ambar-osc); margin-bottom: 8px;
+       display: flex; align-items: center; gap: 8px; }
+  .oscura h3 { color: var(--ambar); }
+  p, li, td, th { font-size: clamp(15px, 1.25vw, 18px); line-height: 1.5; }
+  .nota { font-size: 14px; opacity: .8; margin-top: clamp(16px, 2vw, 28px); }
+  code { font-family: var(--mono); font-size: .92em; }
+
+  /* portada */
+  .barra { width: 72px; height: 6px; background: var(--ambar); margin-bottom: 28px; }
+  .portada { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(24px, 4vw, 64px); align-items: center; }
+  .portada .sub { font-size: clamp(17px, 1.6vw, 22px); color: var(--claro); opacity: .8; margin-top: 18px; }
+  .portada .autores { font-size: 14px; margin-top: 28px; }
+  .foto { width: 100%; border-radius: 10px; display: block; background: #fff; }
+
+  /* tarjetas */
+  .grid { display: grid; gap: clamp(12px, 1.4vw, 20px); }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g5 { grid-template-columns: repeat(5, 1fr); }
+  .card { background: var(--crema-2); border-radius: 10px; padding: clamp(16px, 1.6vw, 24px); }
+  .oscura .card { background: var(--navy-2); color: var(--claro-suave); }
+  .card p { font-size: clamp(14px, 1.1vw, 16px); }
+  .icono { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; margin-bottom: 14px;
+           background: var(--ambar); color: var(--tinta); }
+  .icono .ms { font-size: 26px; }
+
+  /* desafío */
+  .ambar h2 { margin-bottom: 20px; }
+  .ambar .fuerte { font-size: clamp(20px, 2.2vw, 30px); font-weight: 700; color: var(--tinta); line-height: 1.3; max-width: 32ch; }
+  .ambar p.extra { margin-top: 20px; max-width: 60ch; }
+  .ambar .ms.grande { font-size: 64px; margin-bottom: 20px; }
+
+  /* tablas */
+  .tabla { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 9px 12px; border: 1px solid var(--crema-line); }
+  th { font-weight: 600; color: var(--ambar-osc); background: var(--crema-2); }
+  .oscura th, .oscura td { border-color: var(--navy-line); }
+  .oscura th { color: var(--ambar); background: var(--navy-2); }
+  .oscura td { color: var(--claro); }
+  td .ms { font-size: 20px; margin-right: 8px; color: var(--ambar-osc); }
+  .oscura td .ms { color: var(--ambar); }
+
+  /* código */
+  .codigo { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.6vw, 24px); align-items: start; }
+  .lista { list-style: none; background: var(--navy-2); border-radius: 10px; padding: clamp(16px, 1.6vw, 24px); }
+  .lista li { color: var(--claro); padding: 5px 0; display: flex; gap: 10px; }
+  .lista li .ms { color: var(--ambar); font-size: 20px; }
+  .lista b { color: #fff; font-family: var(--mono); font-weight: 600; }
+  pre { background: #0B1420; color: var(--ambar); border-radius: 10px; padding: clamp(16px, 1.6vw, 24px);
+        font-family: var(--mono); font-size: clamp(13px, 1.05vw, 15px); line-height: 1.7; white-space: pre-wrap; }
+  pre .c { color: var(--claro-suave); }
+
+  /* resultados */
+  .resultados { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 3vw, 48px); align-items: center; }
+  .viñetas { list-style: none; display: grid; gap: 14px; }
+  .viñetas li { display: flex; gap: 12px; color: var(--claro); }
+  .viñetas li .ms { color: var(--ambar); }
+  .viñetas li.limite .ms { color: var(--claro-suave); }
+
+  /* navegación */
+  .nav { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+  .nav button { width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center;
+                background: rgba(20, 32, 46, .75); color: #fff; backdrop-filter: blur(6px); }
+  .nav button:hover { background: var(--ambar); color: var(--tinta); }
+  .nav button:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
+
+  @media (max-width: 860px) {
+    html { scroll-snap-type: none; }
+    .slide { min-height: auto; padding: 56px 16px; }
+    .portada, .g2, .g3, .g4, .g5, .codigo, .resultados { grid-template-columns: 1fr; }
+    .nav { display: none; }
+  }
+  @media print {
+    @page { size: 13.333in 7.5in; margin: 0; }
+    html { scroll-snap-type: none; }
+    .slide { height: 7.5in; min-height: 0; break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. Portada -->
+<section class="slide oscura" id="s1">
+  <div class="portada">
+    <div>
+      <div class="barra"></div>
+      <h1>ROBOT-REC: robot recolector de basura para oficinas</h1>
+      <p class="sub">Simulación en MuJoCo y Genesis con base de tracción diferencial y brazo Kinova Gen3 de 7 grados de libertad</p>
+      <p class="autores">[Autores] · [Curso] · [Fecha]</p>
+    </div>
+    <img class="foto" src="captura_rutina_oficina.png" alt="El ROBOT-REC en la oficina simulada, junto a una papelera de malla">
+  </div>
+  <span class="num">1</span>
+</section>
+
+<!-- 2. Desafío -->
+<section class="slide ambar" id="s2">
+  <span class="ms grande" aria-hidden="true">delete_sweep</span>
+  <h2>El desafío</h2>
+  <p class="fuerte">Vaciar las papeleras de una oficina es una tarea repetitiva que hoy se hace a mano, papelera por papelera.</p>
+  <p class="extra">ROBOT-REC recorre los pasillos, toma cada papelera por el aro, la vacía en su tolva y la devuelve a su sitio.</p>
+  <span class="num">2</span>
+</section>
+
+<!-- 3. El proyecto -->
+<section class="slide clara" id="s3">
+  <h2>El proyecto</h2>
+  <div class="grid g4">
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">robot_2</span></div>
+      <h3>Base</h3><p>Tracción diferencial de 110 × 72 cm y 35 kg, con 2 ruedas motrices y 4 locas.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">precision_manufacturing</span></div>
+      <h3>Brazo</h3><p>Kinova Gen3 de 7 grados de libertad montado sobre la cubierta.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">back_hand</span></div>
+      <h3>Pinza</h3><p>Paralela, de dedos acoplados y 120 N por dedo, con almohadillas de caucho.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">delete</span></div>
+      <h3>Tolva</h3><p>Unos 95 L sobre la cubierta, detrás del brazo.</p></div>
+  </div>
+  <p class="nota">Ciclo de trabajo: llega a la papelera, la toma por el aro, la vacía en la tolva y la devuelve a su sitio.</p>
+  <span class="num">3</span>
+</section>
+
+<!-- 4. Ciclo -->
+<section class="slide oscura" id="s4">
+  <h2>Qué hace en cada papelera</h2>
+  <div class="grid g5">
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">route</span></div>
+      <h3>1. Llega</h3><p>Recorre los pasillos por puntos de paso.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">align_horizontal_left</span></div>
+      <h3>2. Se alinea</h3><p>Pasa con la papelera a su izquierda y se detiene a su lado.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">pinch</span></div>
+      <h3>3. Toma</h3><p>El Gen3 pinza el aro de la pared que mira al carro.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">rotate_right</span></div>
+      <h3>4. Vacía</h3><p>La lleva en arco sobre la tolva y la invierte.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">undo</span></div>
+      <h3>5. Devuelve</h3><p>La deja vacía y de pie en su sitio.</p></div>
+  </div>
+  <span class="num">4</span>
+</section>
+
+<!-- 5. Diseño -->
+<section class="slide oscura" id="s5">
+  <h2>Diseño del sistema</h2>
+  <div class="grid g2">
+    <div class="card"><h3><span class="ms" aria-hidden="true">settings</span>Articulaciones</h3>
+      <p>2 ruedas motrices, 4 ruedas locas pasivas, 7 rotativas en el Gen3 y 2 dedos prismáticos acoplados por piñón y cremallera.</p></div>
+    <div class="card"><h3><span class="ms" aria-hidden="true">bolt</span>Actuadores</h3>
+      <p>Control de posición en el brazo (hasta 105 N·m en J1 a J4 y 52 N·m en J5 a J7) y en los dedos (120 N). Control de velocidad en las ruedas.</p></div>
+    <div class="card"><h3><span class="ms" aria-hidden="true">sensors</span>Sensores</h3>
+      <p>IMU de 9 ejes en el chasis, cámara RealSense en la muñeca, banda-parachoques con sensores ToF y LiDAR de 360°.</p></div>
+    <div class="card"><h3><span class="ms" aria-hidden="true">straighten</span>Especificaciones</h3>
+      <p>Ruedas de 12 cm a unos 0,32 m/s. Al girar en el sitio barre un círculo de unos 0,66 m de radio. Baterías LiFePO4 adelante como contrapeso del brazo.</p></div>
+  </div>
+  <span class="num">5</span>
+</section>
+
+<!-- 6. Escenario -->
+<section class="slide clara" id="s6">
+  <h2>Escenario: la oficina</h2>
+  <div class="tabla">
+    <table>
+      <thead><tr><th>Papelera</th><th>Ubicación</th><th>Posición (m)</th><th>Basura</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Pasillo central, entre escritorios</td><td>(3,75; 5,45)</td><td>Bola de papel, lata y caja</td></tr>
+        <tr><td>2</td><td>Junto al último escritorio</td><td>(8,60; 2,90)</td><td>2 bolas de papel, caja y lata</td></tr>
+        <tr><td>3</td><td>Detrás de la fila norte</td><td>(6,25; 7,15)</td><td>Caja y lata llena (350 g)</td></tr>
+        <tr><td>4</td><td>Pasillo sur, junto a las sillas</td><td>(4,00; 2,15)</td><td>2 bolas de papel y 2 cajas</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="nota">Oficina de 10 × 8,5 m con escritorios, sillas y plantas. Se genera desde <code>oficina.py</code>: <code>TAREAS</code>, <code>BASURA</code> e <code>INICIO</code> definen papeleras, residuos y pose inicial.</p>
+  <span class="num">6</span>
+</section>
+
+<!-- 7. Herramientas -->
+<section class="slide oscura" id="s7">
+  <h2>Herramientas utilizadas</h2>
+  <div class="tabla">
+    <table>
+      <thead><tr><th>Herramienta</th><th>Para qué se usó</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ms" aria-hidden="true">deployed_code</span>MuJoCo</td><td>Simulador de física y cinemática del robot (también la IK cuando corre en Genesis)</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">memory</span>Genesis y PyTorch</td><td>Simulador alterno en GPU NVIDIA con CUDA</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">code</span>Python 3</td><td>Navegación, rutina del brazo, cinemática inversa y autoprueba</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">data_object</span>XML (MJCF)</td><td>Robot, papelera y escena en <code>robot_rec.xml</code>, <code>papelera.xml</code> y <code>escena.xml</code></td></tr>
+        <tr><td><span class="ms" aria-hidden="true">calculate</span>NumPy</td><td>Álgebra de la cinemática y de las trayectorias</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">view_in_ar</span>MuJoCo Menagerie</td><td>Mallas, inercias y ganancias del Kinova Gen3 (licencia BSD-3)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <span class="num">7</span>
+</section>
+
+<!-- 8. Modelo -->
+<section class="slide clara" id="s8">
+  <h2>Modelo del robot: <code>robot_rec.xml</code></h2>
+  <div class="grid g2">
+    <div class="card"><h3><span class="ms" aria-hidden="true">robot_2</span>Base diferencial</h3>
+      <p>Cuerpo con pasos de rueda, ruedas locas con giro libre desplazado 25 mm, paro de emergencia y LiDAR.</p></div>
+    <div class="card"><h3><span class="ms" aria-hidden="true">precision_manufacturing</span>Kinova Gen3</h3>
+      <p>Sobre una placa de montaje de 12 mm. Ganancias de Menagerie: actuadores grandes en J1 a J4 y pequeños en J5 a J7.</p></div>
+    <div class="card"><h3><span class="ms" aria-hidden="true">pinch</span>Pinza paralela</h3>
+      <p>Almohadillas de caucho de 12 mm que cierran hasta pinzar un aro de 1 cm. La palma hace de tope.</p></div>
+    <div class="card"><h3><span class="ms" aria-hidden="true">delete</span>Papelera de malla</h3>
+      <p>Troncopiramidal: base de 17 cm, boca de 21 cm y 20 cm de alto, con aro superior rígido y reborde.</p></div>
+  </div>
+  <p class="nota">La escena une piso, oficina y robot; <code>oficina.xml</code> se regenera en cada ejecución.</p>
+  <span class="num">8</span>
+</section>
+
+<!-- 9. Código -->
+<section class="slide oscura" id="s9">
+  <h2>Código Python: <code>simular.py</code></h2>
+  <div class="codigo">
+    <ul class="lista">
+      <li><span class="ms" aria-hidden="true">function</span><span><b>IK</b>: cinemática inversa numérica del Gen3</span></li>
+      <li><span class="ms" aria-hidden="true">function</span><span><b>ir_a</b>: navegación por puntos de paso</span></li>
+      <li><span class="ms" aria-hidden="true">function</span><span><b>aproximar</b>: seguidor de línea hasta la papelera</span></li>
+      <li><span class="ms" aria-hidden="true">function</span><span><b>vaciar_papelera</b>: tomar, vaciar y devolver</span></li>
+      <li><span class="ms" aria-hidden="true">function</span><span><b>rutina</b>: recorre todas las papeleras</span></li>
+      <li><span class="ms" aria-hidden="true">function</span><span><b>SimMuJoCo</b> / <b>SimGenesis</b>: los dos backends</span></li>
+      <li><span class="ms" aria-hidden="true">function</span><span><b>autoprueba</b>: revisa la IK antes de simular</span></li>
+    </ul>
+    <div>
+      <pre><span class="c"># mínimos cuadrados amortiguados, λ = 1e-4</span>
+e  = [p* − p ; ½ Σ rᵢ × rᵢ*]
+J⁺ = Jᵀ (J Jᵀ + λI)⁻¹
+<span class="c"># 7 DOF: la redundancia tiende al reposo</span>
+Δq = J⁺ e + 0,05 (I − J⁺J)(q_reposo − q)
+<span class="c"># paso limitado a 0,2 rad, tolerancia 0,2 mm</span></pre>
+      <p class="nota">El espacio nulo mantiene el codo arriba. Si no converge, reintenta con la cintura girada y avisa del salto de postura.</p>
+    </div>
+  </div>
+  <span class="num">9</span>
+</section>
+
+<!-- 10. Rutina del brazo -->
+<section class="slide clara" id="s10">
+  <h2>Rutina del brazo</h2>
+  <div class="grid g3">
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">pinch</span></div>
+      <h3>1. Toma</h3><p>Baja sobre el aro con un dedo por dentro y otro por fuera, cierra y sube en vertical.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">rotate_right</span></div>
+      <h3>2. Vacía</h3><p>Gira en arco alrededor de la base del brazo hasta la tolva, voltea 180° y endereza despacio.</p></div>
+    <div class="card"><div class="icono"><span class="ms" aria-hidden="true">undo</span></div>
+      <h3>3. Devuelve</h3><p>Vuelve en arco, centra la base sobre su sitio, afloja, baja 12 mm y recién entonces abre.</p></div>
+  </div>
+  <p class="nota">Si el aro se desliza fuera de la pinza, abandona esa papelera y sigue con la siguiente.</p>
+  <span class="num">10</span>
+</section>
+
+<!-- 11. Resultados -->
+<section class="slide oscura" id="s11">
+  <h2>Resultados y límites</h2>
+  <div class="resultados">
+    <img class="foto" src="captura_rutina_oficina.png" alt="Captura de la rutina en la oficina simulada">
+    <ul class="viñetas">
+      <li><span class="ms" aria-hidden="true">check_circle</span><span>Corrida en MuJoCo: 13 de 13 residuos en la tolva y las 4 papeleras de pie, a 4,3; 4,9; 4,9 y 5,0 cm de su sitio.</span></li>
+      <li><span class="ms" aria-hidden="true">verified</span><span>El criterio exige menos de 5 cm: la papelera 4 quedó justo en el límite, así que la corrida cuenta 3 de 4 y sale con código 1.</span></li>
+      <li><span class="ms" aria-hidden="true">fact_check</span><span>La autoprueba recorre un ciclo solo con cinemática, con el carro desplazado ±5 cm.</span></li>
+      <li class="limite"><span class="ms" aria-hidden="true">info</span><span>Límites: la navegación usa la pose real del simulador; la cámara, el LiDAR y los ToF están modelados pero la rutina aún no los usa.</span></li>
+    </ul>
+  </div>
+  <span class="num">11</span>
+</section>
+
+<!-- 12. Uso -->
+<section class="slide clara" id="s12">
+  <h2>Cómo ejecutarlo</h2>
+  <div class="tabla">
+    <table>
+      <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><code>pip install mujoco numpy</code></td><td>Instala lo necesario para MuJoCo</td></tr>
+        <tr><td><code>pip install torch genesis-world</code></td><td>Solo con GPU NVIDIA con CUDA, para Genesis</td></tr>
+        <tr><td><code>python simular.py</code></td><td>Genesis si hay CUDA; si no, MuJoCo</td></tr>
+        <tr><td><code>--motor mujoco|genesis</code></td><td>Fuerza uno de los dos simuladores</td></tr>
+        <tr><td><code>--sin-ventana</code></td><td>Corre sin visor, como prueba rápida</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <span class="num">12</span>
+</section>
+
+<nav class="nav" aria-label="Diapositivas">
+  <button type="button" id="ant" aria-label="Diapositiva anterior"><span class="ms" aria-hidden="true">arrow_upward</span></button>
+  <button type="button" id="sig" aria-label="Diapositiva siguiente"><span class="ms" aria-hidden="true">arrow_downward</span></button>
+</nav>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const actual = () => slides.reduce((m, s, i) =>
+    Math.abs(s.getBoundingClientRect().top) < Math.abs(slides[m].getBoundingClientRect().top) ? i : m, 0);
+  const ir = d => slides[Math.max(0, Math.min(slides.length - 1, actual() + d))].scrollIntoView();
+  document.getElementById('ant').onclick = () => ir(-1);
+  document.getElementById('sig').onclick = () => ir(1);
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); ir(1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); ir(-1); }
+  });
+</script>
+</body>
+</html>
