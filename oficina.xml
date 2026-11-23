@@ -1,0 +1,125 @@
+<!-- Generado por oficina.py: no editar a mano. Oficina de 10.0 x 8.5 m para el ROBOT-REC. -->
+<mujoco model="oficina">
+  <asset>
+    <material name="of_pared" rgba="0.88 0.87 0.83 1"/>
+    <material name="of_madera" rgba="0.62 0.45 0.3 1"/>
+    <material name="of_metal" rgba="0.55 0.56 0.58 1"/>
+    <material name="of_gris_claro" rgba="0.75 0.76 0.78 1"/>
+    <material name="of_gris_oscuro" rgba="0.25 0.26 0.28 1"/>
+    <material name="of_negro" rgba="0.08 0.08 0.09 1"/>
+    <material name="of_tela" rgba="0.2 0.27 0.45 1"/>
+    <material name="of_vidrio" rgba="0.6 0.8 0.95 0.6"/>
+    <material name="of_puerta" rgba="0.45 0.3 0.2 1"/>
+    <material name="of_blanco" rgba="0.97 0.97 0.97 1"/>
+    <material name="of_maceta" rgba="0.6 0.35 0.25 1"/>
+    <material name="of_hojas" rgba="0.2 0.55 0.25 1"/>
+  </asset>
+  <worldbody>
+    <light pos="2.5 4.25 2.5" dir="0 0 -1" diffuse="0.5 0.5 0.5"/>
+    <light pos="7.5 4.25 2.5" dir="0 0 -1" diffuse="0.5 0.5 0.5"/>
+    <body name="oficina">
+      <geom name="pared_sur" type="box" pos="5.000 -0.050 1.300" size="5.100 0.050 1.300" material="of_pared"/>
+      <geom name="pared_norte" type="box" pos="5.000 8.550 1.300" size="5.100 0.050 1.300" material="of_pared"/>
+      <geom name="pared_oeste" type="box" pos="-0.050 4.250 1.300" size="0.050 4.250 1.300" material="of_pared"/>
+      <geom name="pared_este" type="box" pos="10.050 4.250 1.300" size="0.050 4.250 1.300" material="of_pared"/>
+      <geom name="zocalo_sur" type="box" pos="5.000 0.010 0.050" size="5.000 0.010 0.050" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="zocalo_norte" type="box" pos="5.000 8.490 0.050" size="5.000 0.010 0.050" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="ventana0" type="box" pos="2.000 8.495 1.500" size="0.800 0.010 0.550" material="of_vidrio" contype="0" conaffinity="0"/>
+      <geom name="ventana1" type="box" pos="5.000 8.495 1.500" size="0.800 0.010 0.550" material="of_vidrio" contype="0" conaffinity="0"/>
+      <geom name="ventana2" type="box" pos="8.000 8.495 1.500" size="0.800 0.010 0.550" material="of_vidrio" contype="0" conaffinity="0"/>
+      <geom name="puerta" type="box" pos="9.995 6.500 1.050" size="0.010 0.475 1.050" material="of_puerta" contype="0" conaffinity="0"/>
+      <geom name="pizarra" type="box" pos="0.005 4.900 1.450" size="0.010 0.900 0.450" material="of_blanco" contype="0" conaffinity="0"/>
+      <geom name="escA0_tablero" type="box" pos="2.500 6.000 0.735" size="0.700 0.350 0.015" material="of_madera"/>
+      <geom name="escA0_pata0" type="box" pos="3.160 6.310 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA0_pata1" type="box" pos="3.160 5.690 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA0_pata2" type="box" pos="1.840 6.310 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA0_pata3" type="box" pos="1.840 5.690 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA0_cajonera" type="box" pos="2.920 6.000 0.320" size="0.210 0.275 0.300" material="of_gris_claro"/>
+      <geom name="escA0_monitor" type="box" pos="2.400 5.780 1.000" size="0.275 0.015 0.165" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escA0_pie" type="box" pos="2.400 5.780 0.800" size="0.030 0.030 0.050" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escA0_teclado" type="box" pos="2.400 6.150 0.755" size="0.225 0.075 0.007" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="escA0_silla_base" type="cylinder" pos="2.400 6.600 0.030" size="0.300 0.020" material="of_negro"/>
+      <geom name="escA0_silla_poste" type="cylinder" pos="2.400 6.600 0.240" size="0.030 0.200" material="of_metal"/>
+      <geom name="escA0_silla_asiento" type="box" pos="2.400 6.600 0.460" size="0.240 0.230 0.035" material="of_tela"/>
+      <geom name="escA0_silla_respaldo" type="box" pos="2.400 6.840 0.750" size="0.230 0.025 0.275" material="of_tela"/>
+      <geom name="escB0_tablero" type="box" pos="2.500 3.600 0.735" size="0.700 0.350 0.015" material="of_madera"/>
+      <geom name="escB0_pata0" type="box" pos="3.160 3.910 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB0_pata1" type="box" pos="3.160 3.290 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB0_pata2" type="box" pos="1.840 3.910 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB0_pata3" type="box" pos="1.840 3.290 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB0_cajonera" type="box" pos="2.920 3.600 0.320" size="0.210 0.275 0.300" material="of_gris_claro"/>
+      <geom name="escB0_monitor" type="box" pos="2.400 3.820 1.000" size="0.275 0.015 0.165" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escB0_pie" type="box" pos="2.400 3.820 0.800" size="0.030 0.030 0.050" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escB0_teclado" type="box" pos="2.400 3.450 0.755" size="0.225 0.075 0.007" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="escB0_silla_base" type="cylinder" pos="2.400 3.000 0.030" size="0.300 0.020" material="of_negro"/>
+      <geom name="escB0_silla_poste" type="cylinder" pos="2.400 3.000 0.240" size="0.030 0.200" material="of_metal"/>
+      <geom name="escB0_silla_asiento" type="box" pos="2.400 3.000 0.460" size="0.240 0.230 0.035" material="of_tela"/>
+      <geom name="escB0_silla_respaldo" type="box" pos="2.400 2.760 0.750" size="0.230 0.025 0.275" material="of_tela"/>
+      <geom name="escA1_tablero" type="box" pos="5.000 6.000 0.735" size="0.700 0.350 0.015" material="of_madera"/>
+      <geom name="escA1_pata0" type="box" pos="5.660 6.310 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA1_pata1" type="box" pos="5.660 5.690 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA1_pata2" type="box" pos="4.340 6.310 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA1_pata3" type="box" pos="4.340 5.690 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA1_cajonera" type="box" pos="5.420 6.000 0.320" size="0.210 0.275 0.300" material="of_gris_claro"/>
+      <geom name="escA1_monitor" type="box" pos="4.900 5.780 1.000" size="0.275 0.015 0.165" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escA1_pie" type="box" pos="4.900 5.780 0.800" size="0.030 0.030 0.050" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escA1_teclado" type="box" pos="4.900 6.150 0.755" size="0.225 0.075 0.007" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="escA1_silla_base" type="cylinder" pos="4.900 6.600 0.030" size="0.300 0.020" material="of_negro"/>
+      <geom name="escA1_silla_poste" type="cylinder" pos="4.900 6.600 0.240" size="0.030 0.200" material="of_metal"/>
+      <geom name="escA1_silla_asiento" type="box" pos="4.900 6.600 0.460" size="0.240 0.230 0.035" material="of_tela"/>
+      <geom name="escA1_silla_respaldo" type="box" pos="4.900 6.840 0.750" size="0.230 0.025 0.275" material="of_tela"/>
+      <geom name="escB1_tablero" type="box" pos="5.000 3.600 0.735" size="0.700 0.350 0.015" material="of_madera"/>
+      <geom name="escB1_pata0" type="box" pos="5.660 3.910 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB1_pata1" type="box" pos="5.660 3.290 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB1_pata2" type="box" pos="4.340 3.910 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB1_pata3" type="box" pos="4.340 3.290 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB1_cajonera" type="box" pos="5.420 3.600 0.320" size="0.210 0.275 0.300" material="of_gris_claro"/>
+      <geom name="escB1_monitor" type="box" pos="4.900 3.820 1.000" size="0.275 0.015 0.165" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escB1_pie" type="box" pos="4.900 3.820 0.800" size="0.030 0.030 0.050" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escB1_teclado" type="box" pos="4.900 3.450 0.755" size="0.225 0.075 0.007" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="escB1_silla_base" type="cylinder" pos="4.900 3.000 0.030" size="0.300 0.020" material="of_negro"/>
+      <geom name="escB1_silla_poste" type="cylinder" pos="4.900 3.000 0.240" size="0.030 0.200" material="of_metal"/>
+      <geom name="escB1_silla_asiento" type="box" pos="4.900 3.000 0.460" size="0.240 0.230 0.035" material="of_tela"/>
+      <geom name="escB1_silla_respaldo" type="box" pos="4.900 2.760 0.750" size="0.230 0.025 0.275" material="of_tela"/>
+      <geom name="escA2_tablero" type="box" pos="7.500 6.000 0.735" size="0.700 0.350 0.015" material="of_madera"/>
+      <geom name="escA2_pata0" type="box" pos="8.160 6.310 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA2_pata1" type="box" pos="8.160 5.690 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA2_pata2" type="box" pos="6.840 6.310 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA2_pata3" type="box" pos="6.840 5.690 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escA2_cajonera" type="box" pos="7.920 6.000 0.320" size="0.210 0.275 0.300" material="of_gris_claro"/>
+      <geom name="escA2_monitor" type="box" pos="7.400 5.780 1.000" size="0.275 0.015 0.165" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escA2_pie" type="box" pos="7.400 5.780 0.800" size="0.030 0.030 0.050" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escA2_teclado" type="box" pos="7.400 6.150 0.755" size="0.225 0.075 0.007" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="escA2_silla_base" type="cylinder" pos="7.400 6.600 0.030" size="0.300 0.020" material="of_negro"/>
+      <geom name="escA2_silla_poste" type="cylinder" pos="7.400 6.600 0.240" size="0.030 0.200" material="of_metal"/>
+      <geom name="escA2_silla_asiento" type="box" pos="7.400 6.600 0.460" size="0.240 0.230 0.035" material="of_tela"/>
+      <geom name="escA2_silla_respaldo" type="box" pos="7.400 6.840 0.750" size="0.230 0.025 0.275" material="of_tela"/>
+      <geom name="escB2_tablero" type="box" pos="7.500 3.600 0.735" size="0.700 0.350 0.015" material="of_madera"/>
+      <geom name="escB2_pata0" type="box" pos="8.160 3.910 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB2_pata1" type="box" pos="8.160 3.290 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB2_pata2" type="box" pos="6.840 3.910 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB2_pata3" type="box" pos="6.840 3.290 0.360" size="0.020 0.020 0.360" material="of_metal"/>
+      <geom name="escB2_cajonera" type="box" pos="7.920 3.600 0.320" size="0.210 0.275 0.300" material="of_gris_claro"/>
+      <geom name="escB2_monitor" type="box" pos="7.400 3.820 1.000" size="0.275 0.015 0.165" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escB2_pie" type="box" pos="7.400 3.820 0.800" size="0.030 0.030 0.050" material="of_negro" contype="0" conaffinity="0"/>
+      <geom name="escB2_teclado" type="box" pos="7.400 3.450 0.755" size="0.225 0.075 0.007" material="of_gris_oscuro" contype="0" conaffinity="0"/>
+      <geom name="escB2_silla_base" type="cylinder" pos="7.400 3.000 0.030" size="0.300 0.020" material="of_negro"/>
+      <geom name="escB2_silla_poste" type="cylinder" pos="7.400 3.000 0.240" size="0.030 0.200" material="of_metal"/>
+      <geom name="escB2_silla_asiento" type="box" pos="7.400 3.000 0.460" size="0.240 0.230 0.035" material="of_tela"/>
+      <geom name="escB2_silla_respaldo" type="box" pos="7.400 2.760 0.750" size="0.230 0.025 0.275" material="of_tela"/>
+      <geom name="archivador0" type="box" pos="5.600 0.250 0.600" size="0.450 0.225 0.600" material="of_gris_claro"/>
+      <geom name="archivador1" type="box" pos="6.600 0.250 0.600" size="0.450 0.225 0.600" material="of_gris_claro"/>
+      <geom name="archivador2" type="box" pos="7.600 0.250 0.600" size="0.450 0.225 0.600" material="of_gris_claro"/>
+      <geom name="estante" type="box" pos="2.600 0.200 0.900" size="0.600 0.175 0.900" material="of_madera"/>
+      <geom name="planta1_maceta" type="cylinder" pos="0.400 0.400 0.200" size="0.200 0.200" material="of_maceta"/>
+      <geom name="planta1_hojas" type="sphere" pos="0.4 0.4 0.75" size="0.35" material="of_hojas"/>
+      <geom name="planta1_hojas2" type="sphere" pos="0.5 0.32 1.05" size="0.22" material="of_hojas"/>
+      <geom name="planta2_maceta" type="cylinder" pos="4.400 0.350 0.200" size="0.200 0.200" material="of_maceta"/>
+      <geom name="planta2_hojas" type="sphere" pos="4.4 0.35 0.75" size="0.35" material="of_hojas"/>
+      <geom name="planta2_hojas2" type="sphere" pos="4.5 0.26999999999999996 1.05" size="0.22" material="of_hojas"/>
+      <geom name="planta3_maceta" type="cylinder" pos="9.600 0.400 0.200" size="0.200 0.200" material="of_maceta"/>
+      <geom name="planta3_hojas" type="sphere" pos="9.6 0.4 0.75" size="0.35" material="of_hojas"/>
+      <geom name="planta3_hojas2" type="sphere" pos="9.7 0.32 1.05" size="0.22" material="of_hojas"/>
+    </body>
+  </worldbody>
+</mujoco>

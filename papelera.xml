@@ -1,0 +1,43 @@
+<!-- Papelera de malla metálica (como las de oficina): base 17 cm, boca 21 cm, alto 20 cm, sin asa.
+     Arriba tiene un aro rígido vertical de 4 cm y 1 cm de espesor con un reborde de 2,2 cm en el borde;
+     la pinza aprieta el aro y el reborde queda encima de las almohadillas (no puede resbalar hacia abajo).
+     Origen = centro de la base. Mallas visuales de FreeCAD; colisión con cajas.
+     simular.py la inserta varias veces en la escena (MuJoCo: MjSpec.attach; Genesis: morphs.MJCF). -->
+<mujoco model="papelera">
+  <compiler meshdir="meshes" angle="degree"/>
+  <asset>
+    <mesh name="malla" file="papelera_malla.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="aro" file="papelera_aro.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+  <default>
+    <default class="papelera">
+      <geom type="box" group="3" contype="3" conaffinity="3" friction="1.2 0.02 0.001"/>
+    </default>
+  </default>
+  <worldbody>
+    <body name="papelera">
+      <freejoint/>
+      <inertial pos="0 0 0.08" mass="0.5" diaginertia="0.0033 0.0033 0.0033"/>
+      <geom type="mesh" mesh="malla" contype="0" conaffinity="0" group="2" rgba="0.12 0.12 0.14 0.55"/>
+      <geom type="mesh" mesh="aro" contype="0" conaffinity="0" group="2" rgba="0.12 0.12 0.14 1"/>
+      <!-- base -->
+      <geom class="papelera" size="0.088 0.088 0.004" pos="0 0 0.004"/>
+      <!-- paredes inclinadas (8.1°) de la base (z 0.012, ±0.087) al aro (z 0.14, ±0.105). Empiezan sobre la
+           base: si asomaran por debajo, la papelera se apoyaría en sus esquinas y cojearía -->
+      <geom class="papelera" size="0.095 0.002 0.0646" pos="0 0.096 0.076" euler="-8.13 0 0"/>
+      <geom class="papelera" size="0.095 0.002 0.0646" pos="0 -0.096 0.076" euler="8.13 0 0"/>
+      <geom class="papelera" size="0.002 0.095 0.0646" pos="0.096 0 0.076" euler="0 8.13 0"/>
+      <geom class="papelera" size="0.002 0.095 0.0646" pos="-0.096 0 0.076" euler="0 -8.13 0"/>
+      <!-- aro vertical (z 0.14-0.19, cara interior 0.100, exterior 0.110) -->
+      <geom class="papelera" size="0.11 0.005 0.025" pos="0 0.105 0.165"/>
+      <geom class="papelera" size="0.11 0.005 0.025" pos="0 -0.105 0.165"/>
+      <geom class="papelera" size="0.005 0.11 0.025" pos="0.105 0 0.165"/>
+      <geom class="papelera" size="0.005 0.11 0.025" pos="-0.105 0 0.165"/>
+      <!-- reborde enrollado (z 0.19-0.20, de 0.094 a 0.116): sobresale 6 mm a cada lado del aro -->
+      <geom class="papelera" size="0.116 0.011 0.005" pos="0 0.105 0.195"/>
+      <geom class="papelera" size="0.116 0.011 0.005" pos="0 -0.105 0.195"/>
+      <geom class="papelera" size="0.011 0.116 0.005" pos="0.105 0 0.195"/>
+      <geom class="papelera" size="0.011 0.116 0.005" pos="-0.105 0 0.195"/>
+    </body>
+  </worldbody>
+</mujoco>

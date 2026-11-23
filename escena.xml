@@ -1,0 +1,23 @@
+<!-- Escena MuJoCo: oficina (generada por oficina.py) + ROBOT-REC.
+     Las papeleras y la basura se agregan desde simular.py (definidas en oficina.py). -->
+<mujoco model="escena_robot_rec">
+  <include file="robot_rec.xml"/>
+  <include file="oficina.xml"/>
+  <!-- cono elíptico + impratio alto + noslip: evitan que lo agarrado "resbale" lentamente de la pinza
+       (los contactos blandos de MuJoCo permiten deslizamiento lento bajo carga sostenida) -->
+  <option timestep="0.002" integrator="implicitfast" cone="elliptic" impratio="10" noslip_iterations="5"/>
+  <visual>
+    <global offwidth="1280" offheight="720"/>
+    <headlight ambient="0.35 0.35 0.35" diffuse="0.4 0.4 0.4"/>
+  </visual>
+
+  <asset>
+    <texture name="piso" type="2d" builtin="checker" rgb1="0.58 0.55 0.5" rgb2="0.53 0.5 0.46" width="300" height="300"/>
+    <material name="piso" texture="piso" texrepeat="20 17"/>
+  </asset>
+
+  <worldbody>
+    <!-- piso de baldosas de 50 cm que cubre la oficina (0..10 x 0..8.5 m) -->
+    <geom name="piso" type="plane" pos="5 4.25 0" size="5.2 4.45 0.1" material="piso" friction="1 0.01 0.001"/>
+  </worldbody>
+</mujoco>

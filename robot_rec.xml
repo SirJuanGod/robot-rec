@@ -1,0 +1,267 @@
+<!-- ROBOT-REC: base de tracción diferencial + tolva + Kinova Gen3 (7 DOF) + pinza paralela.
+     MJCF para MuJoCo (vía escena.xml) y Genesis.
+     Base, tolva y pinza: STL de FreeCAD (mm -> m). Gen3: mallas, inercias y actuadores de MuJoCo Menagerie
+     (kinova_gen3, licencia BSD-3, ver meshes/gen3/LICENSE).
+     Colisión: primitivas simples en el carro (la tolva queda hueca) y almohadillas en la pinza. -->
+<mujoco model="robot_rec">
+  <compiler angle="radian" meshdir="meshes" autolimits="true"/>
+
+  <asset>
+    <mesh name="chasis" file="chasis.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="chasis_negro" file="chasis_negro.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="detalles" file="detalles.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="tolva" file="tolva.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="horquilla" file="horquilla.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="rueda_loca" file="rueda_loca.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="luces" file="luces.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="placa_brazo" file="placa_brazo.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="paro_base" file="paro_base.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="paro_seta" file="paro_seta.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="lidar" file="lidar.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="rueda" file="rueda.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="llanta" file="llanta.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="pinza" file="pinza.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="dedo" file="dedo.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="almohadilla" file="almohadilla.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="base_link" file="gen3/base_link.stl"/>
+    <mesh name="shoulder_link" file="gen3/shoulder_link.stl"/>
+    <mesh name="half_arm_1_link" file="gen3/half_arm_1_link.stl"/>
+    <mesh name="half_arm_2_link" file="gen3/half_arm_2_link.stl"/>
+    <mesh name="forearm_link" file="gen3/forearm_link.stl"/>
+    <mesh name="spherical_wrist_1_link" file="gen3/spherical_wrist_1_link.stl"/>
+    <mesh name="spherical_wrist_2_link" file="gen3/spherical_wrist_2_link.stl"/>
+    <mesh name="bracelet_with_vision_link" file="gen3/bracelet_with_vision_link.stl"/>
+    <material name="carroceria" rgba="0.13 0.2 0.3 1"/>
+    <material name="tolva" rgba="0.1 0.5 0.32 1"/>
+    <material name="negro" rgba="0.07 0.07 0.08 1"/>
+    <material name="luz" rgba="1 0.95 0.75 1" emission="0.8"/>
+    <material name="alu" rgba="0.72 0.73 0.75 1"/>
+    <material name="amarillo" rgba="0.95 0.78 0.1 1"/>
+    <material name="rojo" rgba="0.85 0.08 0.08 1"/>
+    <material name="grafito" rgba="0.17 0.18 0.2 1"/>
+    <material name="kinova" rgba="0.75294 0.75294 0.75294 1"/>
+  </asset>
+
+  <default>
+    <default class="vis">
+      <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+    </default>
+    <default class="col">
+      <geom group="3" contype="1" conaffinity="1" friction="1 0.01 0.001"/>
+    </default>
+    <default class="rueda">
+      <joint axis="0 1 0" armature="0.02" damping="0.2"/>
+      <geom type="cylinder" size="0.12 0.03" euler="1.5708 0 0" group="3" friction="1.2 0.01 0.001"/>
+    </default>
+    <!-- rueda loca: giro libre vertical (desplazado 25 mm) + rodadura -->
+    <default class="loca_giro">
+      <joint axis="0 0 1" damping="0.02" armature="0.001"/>
+    </default>
+    <default class="loca_rueda">
+      <joint axis="0 1 0" damping="0.002" armature="0.0005"/>
+      <geom type="cylinder" size="0.045 0.013" euler="1.5708 0 0" group="3" friction="0.8 0.01 0.001"/>
+    </default>
+    <default class="gen3">
+      <joint armature="0.1"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="2" material="kinova"/>
+    </default>
+    <default class="dedo">
+      <joint type="slide" axis="-1 0 0" range="0 0.05" armature="0.01" damping="5"/>
+      <!-- almohadilla de caucho de 12 mm: cierra hasta pinzar un aro de 1 cm -->
+      <geom type="box" size="0.006 0.018 0.02" pos="-0.012 0 0.048" group="3"
+            contype="2" conaffinity="2" condim="4" friction="1.5 0.05 0.001" solref="0.004 1"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <!-- Base diferencial 110x72 cm, 35 kg. Marco: z=0 a media altura del cuerpo (cuerpo de -0.09 a +0.09).
+         Las ruedas motrices quedan 3 mm más bajas que las locas para que carguen el peso (tracción). -->
+    <body name="chasis" pos="0 0 0.193">
+      <freejoint name="base_libre"/>
+      <!-- baterías LiFePO4 en el piso del chasis, hacia adelante = contrapeso del brazo -->
+      <inertial pos="0.1 0 -0.04" mass="35" diaginertia="1.6 3.62 5.04"/>
+      <geom class="vis" mesh="chasis" material="carroceria"/>
+      <geom class="vis" mesh="chasis_negro" material="negro"/>
+      <geom class="vis" mesh="detalles" material="grafito"/>
+      <geom class="vis" mesh="luces" material="luz"/>
+      <geom class="vis" mesh="placa_brazo" material="alu"/>
+      <geom class="vis" mesh="paro_base" material="amarillo"/>
+      <geom class="vis" mesh="paro_seta" material="rojo"/>
+      <geom class="vis" mesh="tolva" material="tolva"/>
+      <geom class="vis" mesh="lidar" material="grafito"/>
+      <!-- cuerpo (con los pasos de rueda libres) -->
+      <geom class="col" type="box" size="0.2 0.36 0.09" pos="0.35 0 0"/>
+      <geom class="col" type="box" size="0.2 0.36 0.09" pos="-0.35 0 0"/>
+      <geom class="col" type="box" size="0.15 0.27 0.09" pos="0 0 0"/>
+      <!-- tolva sobre la cubierta: hueco x -0.528..0.068, y ±0.318, fondo z=0.09, borde z=0.34 (≈95 L) -->
+      <geom class="col" type="box" size="0.006 0.33 0.125" pos="0.074 0 0.215"/>
+      <geom class="col" type="box" size="0.006 0.33 0.125" pos="-0.534 0 0.215"/>
+      <geom class="col" type="box" size="0.31 0.006 0.125" pos="-0.23 0.324 0.215"/>
+      <geom class="col" type="box" size="0.31 0.006 0.125" pos="-0.23 -0.324 0.215"/>
+      <site name="imu" pos="0 0 0"/>
+
+      <!-- ruedas motrices (centro del chasis) -->
+      <body name="rueda_izq" pos="0 0.315 -0.073">
+        <joint name="rueda_izq" class="rueda"/>
+        <inertial pos="0 0 0" mass="1.5" diaginertia="0.00585 0.0108 0.00585"/>
+        <geom class="vis" mesh="rueda" material="negro"/>
+        <geom class="vis" mesh="llanta" material="alu"/>
+        <geom class="rueda"/>
+      </body>
+      <body name="rueda_der" pos="0 -0.315 -0.073">
+        <joint name="rueda_der" class="rueda"/>
+        <inertial pos="0 0 0" mass="1.5" diaginertia="0.00585 0.0108 0.00585"/>
+        <geom class="vis" mesh="rueda" material="negro"/>
+        <geom class="vis" mesh="llanta" material="alu"/>
+        <geom class="rueda"/>
+      </body>
+
+      <!-- ruedas locas en las esquinas -->
+      <body name="loca_di" pos="0.45 0.27 -0.096">
+        <joint name="loca_di_giro" class="loca_giro"/>
+        <inertial pos="-0.01 0 -0.025" mass="0.15" diaginertia="1e-4 1e-4 1e-4"/>
+        <geom class="vis" mesh="horquilla" material="alu"/>
+        <body pos="-0.025 0 -0.049">
+          <joint name="loca_di_rueda" class="loca_rueda"/>
+          <inertial pos="0 0 0" mass="0.2" diaginertia="1.1e-4 2e-4 1.1e-4"/>
+          <geom class="vis" mesh="rueda_loca" material="negro"/>
+          <geom class="loca_rueda"/>
+        </body>
+      </body>
+      <body name="loca_dd" pos="0.45 -0.27 -0.096">
+        <joint name="loca_dd_giro" class="loca_giro"/>
+        <inertial pos="-0.01 0 -0.025" mass="0.15" diaginertia="1e-4 1e-4 1e-4"/>
+        <geom class="vis" mesh="horquilla" material="alu"/>
+        <body pos="-0.025 0 -0.049">
+          <joint name="loca_dd_rueda" class="loca_rueda"/>
+          <inertial pos="0 0 0" mass="0.2" diaginertia="1.1e-4 2e-4 1.1e-4"/>
+          <geom class="vis" mesh="rueda_loca" material="negro"/>
+          <geom class="loca_rueda"/>
+        </body>
+      </body>
+      <body name="loca_ti" pos="-0.45 0.27 -0.096">
+        <joint name="loca_ti_giro" class="loca_giro"/>
+        <inertial pos="-0.01 0 -0.025" mass="0.15" diaginertia="1e-4 1e-4 1e-4"/>
+        <geom class="vis" mesh="horquilla" material="alu"/>
+        <body pos="-0.025 0 -0.049">
+          <joint name="loca_ti_rueda" class="loca_rueda"/>
+          <inertial pos="0 0 0" mass="0.2" diaginertia="1.1e-4 2e-4 1.1e-4"/>
+          <geom class="vis" mesh="rueda_loca" material="negro"/>
+          <geom class="loca_rueda"/>
+        </body>
+      </body>
+      <body name="loca_td" pos="-0.45 -0.27 -0.096">
+        <joint name="loca_td_giro" class="loca_giro"/>
+        <inertial pos="-0.01 0 -0.025" mass="0.15" diaginertia="1e-4 1e-4 1e-4"/>
+        <geom class="vis" mesh="horquilla" material="alu"/>
+        <body pos="-0.025 0 -0.049">
+          <joint name="loca_td_rueda" class="loca_rueda"/>
+          <inertial pos="0 0 0" mass="0.2" diaginertia="1.1e-4 2e-4 1.1e-4"/>
+          <geom class="vis" mesh="rueda_loca" material="negro"/>
+          <geom class="loca_rueda"/>
+        </body>
+      </body>
+
+      <!-- Kinova Gen3 sobre la placa de montaje (cubierta en z=0.09 + placa 12 mm) -->
+      <body name="base_link" pos="0.32 0 0.102" childclass="gen3">
+        <inertial pos="-0.000648 -0.000166 0.084487" quat="0.999294 0.00139618 -0.0118387 0.035636" mass="1.697"
+          diaginertia="0.00462407 0.00449437 0.00207755"/>
+        <geom mesh="base_link"/>
+        <body name="shoulder_link" pos="0 0 0.15643" quat="0 1 0 0">
+          <inertial pos="-2.3e-05 -0.010364 -0.07336" quat="0.707051 0.0451246 -0.0453544 0.704263" mass="1.3773"
+            diaginertia="0.00488868 0.00457 0.00135132"/>
+          <joint name="joint_1"/>
+          <geom mesh="shoulder_link"/>
+          <body name="half_arm_1_link" pos="0 0.005375 -0.12838" quat="1 1 0 0">
+            <inertial pos="-4.4e-05 -0.09958 -0.013278" quat="0.482348 0.516286 -0.516862 0.483366" mass="1.1636"
+              diaginertia="0.0113017 0.011088 0.00102532"/>
+            <joint name="joint_2" range="-2.24 2.24"/>
+            <geom mesh="half_arm_1_link"/>
+            <body name="half_arm_2_link" pos="0 -0.21038 -0.006375" quat="1 -1 0 0">
+              <inertial pos="-4.4e-05 -0.006641 -0.117892" quat="0.706144 0.0213722 -0.0209128 0.707437" mass="1.1636"
+                diaginertia="0.0111633 0.010932 0.00100671"/>
+              <joint name="joint_3"/>
+              <geom mesh="half_arm_2_link"/>
+              <body name="forearm_link" pos="0 0.006375 -0.21038" quat="1 1 0 0">
+                <inertial pos="-1.8e-05 -0.075478 -0.015006" quat="0.483678 0.515961 -0.515859 0.483455" mass="0.9302"
+                  diaginertia="0.00834839 0.008147 0.000598606"/>
+                <joint name="joint_4" range="-2.57 2.57"/>
+                <geom mesh="forearm_link"/>
+                <body name="spherical_wrist_1_link" pos="0 -0.20843 -0.006375" quat="1 -1 0 0">
+                  <inertial pos="1e-06 -0.009432 -0.063883" quat="0.703558 0.0707492 -0.0707492 0.703558" mass="0.6781"
+                    diaginertia="0.00165901 0.001596 0.000346988"/>
+                  <joint name="joint_5"/>
+                  <geom mesh="spherical_wrist_1_link"/>
+                  <body name="spherical_wrist_2_link" pos="0 0.00017505 -0.10593" quat="1 1 0 0">
+                    <inertial pos="1e-06 -0.045483 -0.00965" quat="0.44426 0.550121 -0.550121 0.44426" mass="0.6781"
+                      diaginertia="0.00170087 0.001641 0.00035013"/>
+                    <joint name="joint_6" range="-2.09 2.09"/>
+                    <geom mesh="spherical_wrist_2_link"/>
+                    <body name="bracelet_link" pos="0 -0.10593 -0.00017505" quat="1 -1 0 0">
+                      <inertial pos="0.000281 0.011402 -0.029798" quat="0.394358 0.596779 -0.577293 0.393789" mass="0.5"
+                        diaginertia="0.000657336 0.000587019 0.000320645"/>
+                      <joint name="joint_7"/>
+                      <geom mesh="bracelet_with_vision_link"/>
+                      <camera name="realsense" pos="0 -0.05639 -0.058475" quat="0 0 0 1" fovy="41.84"/>
+
+                      <!-- Pinza paralela en la brida (eje +z de la pinza = dirección de la herramienta) -->
+                      <body name="pinza" pos="0 0 -0.061525" quat="0 1 0 0">
+                        <inertial pos="0 0 0.025" mass="0.4" diaginertia="0.0006 0.0006 0.0004"/>
+                        <geom mesh="pinza" material="grafito"/>
+                        <!-- palma: tope para lo que entra entre los dedos (z 12-42 mm) -->
+                        <geom type="box" size="0.065 0.028 0.015" pos="0 0 0.027" group="3" contype="2" conaffinity="2"
+                              friction="1.2 0.02 0.001"/>
+                        <site name="tcp" pos="0 0 0.09" size="0.008" rgba="1 0 0 1" group="4"/>
+                        <body name="dedo_izq" pos="0.055 0 0.042">
+                          <joint name="dedo_izq" class="dedo"/>
+                          <inertial pos="0 0 0.035" mass="0.05" diaginertia="2e-5 2e-5 2e-5"/>
+                          <geom mesh="dedo" material="alu"/>
+                          <geom mesh="almohadilla" material="negro"/>
+                          <geom class="dedo"/>
+                        </body>
+                        <body name="dedo_der" pos="-0.055 0 0.042" euler="0 0 3.1416">
+                          <joint name="dedo_der" class="dedo"/>
+                          <inertial pos="0 0 0.035" mass="0.05" diaginertia="2e-5 2e-5 2e-5"/>
+                          <geom mesh="dedo" material="alu"/>
+                          <geom mesh="almohadilla" material="negro"/>
+                          <geom class="dedo"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Gen3: ganancias de Menagerie (actuadores grandes 1-4, pequeños 5-7). Pinza de 120 N por dedo (tipo Robotiq 2F-85: 20-235 N). -->
+  <actuator>
+    <position name="joint_1" joint="joint_1" kp="2000" kv="100" forcerange="-105 105"/>
+    <position name="joint_2" joint="joint_2" kp="2000" kv="100" forcerange="-105 105"/>
+    <position name="joint_3" joint="joint_3" kp="2000" kv="100" forcerange="-105 105"/>
+    <position name="joint_4" joint="joint_4" kp="2000" kv="100" forcerange="-105 105"/>
+    <position name="joint_5" joint="joint_5" kp="500" kv="50" forcerange="-52 52"/>
+    <position name="joint_6" joint="joint_6" kp="500" kv="50" forcerange="-52 52"/>
+    <position name="joint_7" joint="joint_7" kp="500" kv="50" forcerange="-52 52"/>
+    <position name="dedo_izq" joint="dedo_izq" kp="6000" kv="40" forcerange="-120 120"/>
+    <position name="dedo_der" joint="dedo_der" kp="6000" kv="40" forcerange="-120 120"/>
+    <velocity name="rueda_izq" joint="rueda_izq" kv="50" forcerange="-40 40"/>
+    <velocity name="rueda_der" joint="rueda_der" kv="50" forcerange="-40 40"/>
+  </actuator>
+
+  <!-- pinza paralela: los dos dedos acoplados mecánicamente (piñón-cremallera), se mueven igual -->
+  <equality>
+    <joint joint1="dedo_der" joint2="dedo_izq" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <!-- IMU de 9 ejes del chasis (acelerómetro + giróscopo + orientación) -->
+  <sensor>
+    <accelerometer name="imu_acc" site="imu"/>
+    <gyro name="imu_gyro" site="imu"/>
+    <framequat name="imu_quat" objtype="site" objname="imu"/>
+  </sensor>
+</mujoco>
