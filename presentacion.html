@@ -87,6 +87,10 @@
   .oscura th, .oscura td { border-color: var(--navy-line); }
   .oscura th { color: var(--ambar); background: var(--navy-2); }
   .oscura td { color: var(--claro); }
+  .der { text-align: right; white-space: nowrap; }
+  .compacta th, .compacta td { padding: 5px 10px; font-size: clamp(13px, 1.05vw, 15px); }
+  .compacta td .ms { font-size: 18px; }
+  tr.total td { font-weight: 600; color: var(--ambar); }
   td .ms { font-size: 20px; margin-right: 8px; color: var(--ambar-osc); }
   .oscura td .ms { color: var(--ambar); }
 
@@ -137,7 +141,7 @@
       <div class="barra"></div>
       <h1>ROBOT-REC: robot recolector de basura para oficinas</h1>
       <p class="sub">Simulación en MuJoCo y Genesis con base de tracción diferencial y brazo Kinova Gen3 de 7 grados de libertad</p>
-      <p class="autores">[Autores] · [Curso] · [Fecha]</p>
+      <p class="autores">Juan Esteban Gómez · Jorge Giraldo · Josué Ramírez · Fundamentos de Robótica</p>
     </div>
     <img class="foto" src="captura_rutina_oficina.png" alt="El ROBOT-REC en la oficina simulada, junto a una papelera de malla">
   </div>
@@ -330,6 +334,30 @@ J⁺ = Jᵀ (J Jᵀ + λI)⁻¹
     </table>
   </div>
   <span class="num">12</span>
+</section>
+
+<!-- 13. Costos -->
+<section class="slide oscura" id="s13">
+  <h2 style="margin-bottom:16px">Costos estimados</h2>
+  <div class="tabla compacta">
+    <table>
+      <thead><tr><th>Componente</th><th>Referencia</th><th class="der">Cant.</th><th class="der">Bajo (COP)</th><th class="der">Alto (COP)</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ms" aria-hidden="true">precision_manufacturing</span>Brazo de 7 grados de libertad</td><td>Kinova Gen3 (alto: con frenos)</td><td class="der">1</td><td class="der">$103.860.000</td><td class="der">$133.980.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">pinch</span>Pinza paralela</td><td>Robotiq 2F-85</td><td class="der">1</td><td class="der">$17.310.000</td><td class="der">$20.170.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">videocam</span>Cámara de profundidad</td><td>Intel RealSense D435</td><td class="der">1</td><td class="der">$1.180.000</td><td class="der">$1.800.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">radar</span>LiDAR de 360°</td><td>RPLIDAR A2M12</td><td class="der">1</td><td class="der">$600.000</td><td class="der">$1.140.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">tire_repair</span>Ruedas motrices con driver y encoder</td><td>Motor de cubo de 24 V</td><td class="der">2</td><td class="der">$800.000</td><td class="der">$2.220.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">battery_charging_full</span>Batería LiFePO4</td><td>24 V, 50 Ah</td><td class="der">1</td><td class="der">$800.000</td><td class="der">$3.050.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">memory</span>Computador a bordo</td><td>NVIDIA Jetson Orin Nano Super</td><td class="der">1</td><td class="der">$860.000</td><td class="der">$1.900.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">sensors</span>Sensores ToF del parachoques</td><td>VL53L1X</td><td class="der">8</td><td class="der">$280.000</td><td class="der">$640.000</td></tr>
+        <tr><td><span class="ms" aria-hidden="true">build</span>Chasis, tolva, ruedas locas, IMU, paro, cableado e integración</td><td>15 % del resto</td><td class="der">1</td><td class="der">$18.850.000</td><td class="der">$24.740.000</td></tr>
+        <tr class="total"><td colspan="3">Total en pesos colombianos</td><td class="der">$144.540.000</td><td class="der">$189.640.000</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="nota">Precios de tiendas en línea de EE. UU. convertidos con la TRM de $3.461,92 (21 al 23 de noviembre de 2026), sin envío, arancel ni IVA de importación. La cantidad de sensores ToF es un supuesto. El brazo es más del 70 % del costo. Referencia: una base diferencial comercial lista, la AgileX Tracer, ronda los $22,5 millones.</p>
+  <span class="num">13</span>
 </section>
 
 <nav class="nav" aria-label="Diapositivas">
